@@ -368,7 +368,7 @@ function ItemList (CartService) {
   ctrl.getList = () => {
     CartService.getCart()
       .then( (data) => {
-          ctrl.questions = data;
+          ctrl.cartItems = data;
       })
       .catch( (err) => {
           console.log(err);
