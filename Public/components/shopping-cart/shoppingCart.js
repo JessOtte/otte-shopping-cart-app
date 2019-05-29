@@ -20,13 +20,13 @@ angular.module("CartApp")
              </button>
            </div>
            <div class="modal-body">
-             <table class="show-cart table">                
+             <table class="show-cart table">  
              </table>
              <div class="modal-total">Total price: $<span class="total-cart"></span></div>
            </div>
            <div class="modal-footer">
              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-             <!-- <button type="button" class="btn btn-primary">Order now</button> -->
+             <button type="button" class="btn btn-primary" data-dismiss="modal">Order now</button>
              <button class="clear-cart btn btn-danger">Clear Cart</button>
            </div>
          </div>

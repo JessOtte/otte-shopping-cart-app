@@ -1,18 +1,40 @@
 const express = require("express");
-// const cartData = require("./cartData");
+const cartData = require("./cartData");
 const cartItems = express.Router();
+
+cartItems.get('/', (req,res) => {
+    res.send(cartData);
+});
+
+// /**
+//  *  Get a specific item
+//  */
+// cartItems.get('/:id', (req,res) => {
+
+//     // Getting the ID from the URL and setting it to the array
+//     let index = req.params.id;
+
+//     // If exists inside of array
+//     if ( cartData[index] ) {
+//         res.send(cartData[index]);
+
+//     } else {
+//         res.send('Hey, that\'s not a valid item!');
+//     }
+
+//     res.send('Hello, world');
+// });
 
 const pg = require("pg");
 const pool = new pg.Pool({
     user: "postgres",
-    password: "",
+    password: "adrenalinerush8",
     host: "localhost",
     port: 5432,
     database: "ExpressShopDB",
     ssl: false
 });
 
-// DISPLAY ITEMS IN DATABASE
 cartItems.get("/cart-items", (req, res) => {
     pool.query("SELECT * FROM shoppingcart;")
         .then((result) => {
@@ -21,17 +43,16 @@ cartItems.get("/cart-items", (req, res) => {
     // console.log(req.body); 
 });
 
-// cartItems.get("/cart-items/:id", (req, res) => {
-//     let index = req.params.id;
+cartItems.get("/cart-items/:id", (req, res) => {
+    let index = req.params.id;
  
-//     if (cartData[index]) {
-//         res.send(cartData[index]);
-//     } else {
-//         res.send('Item not found');
-//     }
-//  });
+    if (cartData[index]) {
+        res.send(cartData[index]);
+    } else {
+        res.send('Item not found');
+    }
+ });
 
-// ADD AN ITEM TO THE DATABASE
 cartItems.post("/cart-items", (req, res) => {
     let cartData = req.body; // <-- Get the parsed JSON body
     let sql = "INSERT INTO shoppingcart(id, price, product, quantity) " +
@@ -44,7 +65,6 @@ cartItems.post("/cart-items", (req, res) => {
     });
 });
 
-// UPDATE AN ITEM IN THE DATABASE
 cartItems.put("/cart-items/:id", (req, res) => {
     let id = req.params.id;
     let cartData = req.body;
@@ -61,7 +81,6 @@ cartItems.put("/cart-items/:id", (req, res) => {
     });
 });
 
-// DELETE AN ITEM IN THE DATABASE
 cartItems.delete("/cart-items/:id", (req, res) => {
     // console.log(req.params.id); 
     // res.send("Deleting an item..");
@@ -71,16 +90,15 @@ cartItems.delete("/cart-items/:id", (req, res) => {
 
     // let product = cartData.product;
 
-    let sql = "DELETE FROM shoppingcart SET price=$1::real, product=$2::text, quantity=$3::int WHERE id=$4::int"
-    let values = [cartData.price, cartData.product, cartData.quantity, id];
+    let sql = "DELETE FROM shoppingcart WHERE id=$1::int"
+    // let sql = "DELETE FROM shoppingcart SET price=$1::real, product=$2::text, quantity=$3::int WHERE id=$4::int"
+    let values = [cartData.id];
     
     pool.query(sql, values)
         .then((result) => {
         res.status(204); // No Content
         res.send("DELETED");
     });
-
-
 });
 
 module.exports = cartItems;
